@@ -19,7 +19,7 @@ public class Game
 
     private void DisplayMenu()
     {
-        string menu = @"Welcome to the Math Game app. Your main options are:
+        string menu = @"Choose an option:
     1. Addition
     2. Subtraction
     3. Multiplication
@@ -28,5 +28,56 @@ public class Game
 
 Enter your selection number (or type Exit to exit the program)";
         Console.WriteLine(menu);
+    }
+
+    private void Addition()
+    {
+        var (addendOne, addendTwo) = GenerateNumbers(GameType.Addition);
+        Console.WriteLine($"What is {addendOne} + {addendTwo}");
+        CheckAnswer(addendOne + addendTwo);
+    }
+
+    private void CheckAnswer(int answer)
+    {
+        if (int.TryParse(Console.ReadLine(), out var userAnswer) && userAnswer == answer)
+        {
+            Console.WriteLine("You answered correctly!");
+            Score++;
+        }
+        else
+            Console.WriteLine("You answered incorrectly!");
+    }
+
+    private (int, int) GenerateNumbers(GameType gameType)
+    {
+        int numberOne, numberTwo;
+        Random rand = new Random();
+
+        if (gameType == GameType.Division)
+        {
+            /* Ensure the divisor is not 0 and result is a whole number */
+            do
+            {
+                numberOne = rand.Next(0, 100);
+                numberTwo = rand.Next(1, 100);
+            }
+            while (numberOne % numberTwo != 0);
+        }
+        else
+        {
+            numberOne = rand.Next(1, 100);
+            numberTwo = rand.Next(1, 100);
+        }
+
+        /* Return two values using a Tuple */
+        return (numberOne, numberTwo);
+    }
+
+    internal enum GameType
+    {
+        Addition,
+        Subtraction,
+        Multiplication,
+        Division
     }
 }
