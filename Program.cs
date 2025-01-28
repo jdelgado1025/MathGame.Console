@@ -28,6 +28,9 @@ do
         case "4":
             Division();
             break;
+        case "exit":
+            Console.Write("Goodbye! Thanks for playing!");
+            break;
         default:
             Console.WriteLine("Invalid input");
             break;
@@ -47,14 +50,6 @@ void DisplayMenu()
 
 Enter your selection number (or type Exit to exit the program)";
     Console.WriteLine(menu);
-    //Console.WriteLine("Welcome to the Math Game app. Your main options are:");
-    //Console.WriteLine("1. Addition");
-    //Console.WriteLine("2. Subtraction");
-    //Console.WriteLine("3. Multiplication");
-    //Console.WriteLine("4. Division");
-    //Console.WriteLine("5. Previous Game History");
-    //Console.WriteLine();
-    //Console.WriteLine("Enter your selection number (or type Exit to exit the program)");
 }
 
 void Division()
@@ -68,16 +63,19 @@ void Division()
     int dividend;
     int divisor;
 
-    do
+    for (int i = 0; i < 5; i++)
     {
-        divisor = rand.Next(DIVISOR_MIN, DIVISOR_MAX);
-        dividend = rand.Next(DIVIDEND_MIN, DIVIDEND_MAX);
+        do
+        {
+            divisor = rand.Next(DIVISOR_MIN, DIVISOR_MAX);
+            dividend = rand.Next(DIVIDEND_MIN, DIVIDEND_MAX);
+        }
+        while (dividend % divisor != 0);
+
+        int quotient = dividend / divisor;
+
+        PromptUser(quotient, dividend, divisor, DIVIDE);
     }
-    while (dividend % divisor != 0);
-
-    int quotient = dividend / divisor;
-
-    PromptUser(quotient, dividend, divisor, DIVIDE);
 }
 
 void Multiplication()
@@ -86,11 +84,15 @@ void Multiplication()
     const string MULTIPLY = "*";
     const int MULTIPLICATION_MAX = 500;
     const int MULTIPLICATION_MIN = 0;
-    int multiplier = rand.Next(MULTIPLICATION_MIN, MULTIPLICATION_MAX);
-    int multiplicand = rand.Next(MULTIPLICATION_MIN, MULTIPLICATION_MAX);
-    int product = multiplicand * multiplier;
 
-    PromptUser(product, multiplicand, multiplier, MULTIPLY);
+    for (int i = 0; i < 5; i++)
+    {
+        int multiplier = rand.Next(MULTIPLICATION_MIN, MULTIPLICATION_MAX);
+        int multiplicand = rand.Next(MULTIPLICATION_MIN, MULTIPLICATION_MAX);
+        int product = multiplicand * multiplier;
+
+        PromptUser(product, multiplicand, multiplier, MULTIPLY);
+    }
 }
 
 void Addition()
@@ -99,24 +101,31 @@ void Addition()
     const string ADD = "+";
     const int ADDEND_MAX = 500;
     const int ADDEND_MIN = 0;
-    int addendOne = rand.Next(ADDEND_MIN, ADDEND_MAX);
-    int addendTwo = rand.Next(ADDEND_MIN, ADDEND_MAX);
-    int sum = addendOne + addendTwo;
+    
+    for (int i = 0; i < 5; i++)
+    {
+        int addendOne = rand.Next(ADDEND_MIN, ADDEND_MAX);
+        int addendTwo = rand.Next(ADDEND_MIN, ADDEND_MAX);
+        int sum = addendOne + addendTwo;
 
-    PromptUser(sum, addendOne, addendTwo, ADD);
+        PromptUser(sum, addendOne, addendTwo, ADD);
+    }
 }
 
 void Subtraction()
 {
     var rand = new Random();
-    const string SUBTRACT = "+";
+    const string SUBTRACT = "-";
     const int SUBTRACTION_MAX = 500;
     const int SUBTRACTION_MIN = 0;
-    int minuend = rand.Next(SUBTRACTION_MIN, SUBTRACTION_MAX);
-    int subtrahend = rand.Next(SUBTRACTION_MIN, SUBTRACTION_MAX);
-    int difference = minuend + subtrahend;
 
-    PromptUser(difference, minuend, subtrahend, SUBTRACT);
+    for (int i = 0; i < 5; i++)
+    {
+        int minuend = rand.Next(SUBTRACTION_MIN, SUBTRACTION_MAX);
+        int subtrahend = rand.Next(SUBTRACTION_MIN, SUBTRACTION_MAX);
+        int difference = minuend - subtrahend;
+        PromptUser(difference, minuend, subtrahend, SUBTRACT);
+    }
 }
 
 void PromptUser(int answer, int numberOne, int numberTwo, string mathOperation)
@@ -124,7 +133,7 @@ void PromptUser(int answer, int numberOne, int numberTwo, string mathOperation)
     string? readResult = "";
     int userResult = 0;
 
-    while (readResult == "" || userResult != answer)
+    while (readResult == "")
     {
         switch(mathOperation)
         {
@@ -149,5 +158,5 @@ void PromptUser(int answer, int numberOne, int numberTwo, string mathOperation)
     }
 
     Console.WriteLine("You answered correctly!");
-    Thread.Sleep(1000);
+    Thread.Sleep(500);
 }
