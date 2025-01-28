@@ -19,12 +19,8 @@ public class Game
 
     public void Start()
     {
-        do
-        {
-            Score = 0;
-            PlayGame();
-        }
-        while (PlayAgain());
+        Score = 0;
+        PlayGame();
     }
 
     private void PlayGame()
@@ -32,41 +28,36 @@ public class Game
         string? readResult;
         string menuSelection = "";
 
-        do
+        Console.Clear();
+        DisplayMenu();
+
+        readResult = Console.ReadLine();
+        if (readResult != null)
         {
-            Console.Clear();
-            DisplayMenu();
-
-            readResult = Console.ReadLine();
-            if (readResult != null)
-            {
-                menuSelection = readResult.ToLower().Trim();
-            }
-
-            switch (menuSelection)
-            {
-                case "1":
-                    Addition();
-                    break;
-                case "2":
-                    Subtraction();
-                    break;
-                case "3":
-                    Multiplication();
-                    break;
-                case "4":
-                    Division();
-                    break;
-                case "exit":
-                    Console.Write("Goodbye! Thanks for playing!");
-                    break;
-                default:
-                    Console.WriteLine("Invalid input");
-                    break;
-            }
-
+            menuSelection = readResult.ToLower().Trim();
         }
-        while (menuSelection != "exit");
+
+        switch (menuSelection)
+        {
+            case "1":
+                Addition();
+                break;
+            case "2":
+                Subtraction();
+                break;
+            case "3":
+                Multiplication();
+                break;
+            case "4":
+                Division();
+                break;
+            case "exit":
+                Console.Write("Goodbye! Thanks for playing!");
+                break;
+            default:
+                Console.WriteLine("Invalid input");
+                break;
+        }
     }
 
     private void DisplayMenu()
@@ -90,6 +81,8 @@ Enter your selection number (or type Exit to exit the program)";
             Console.WriteLine($"What is {addendOne} + {addendTwo}");
             CheckAnswer(addendOne + addendTwo);
         }
+
+        GetScore();
     }
 
     private void Subtraction()
@@ -100,6 +93,8 @@ Enter your selection number (or type Exit to exit the program)";
             Console.WriteLine($"What is {minuend} - {subtrahend}");
             CheckAnswer(minuend - subtrahend);
         }
+
+        GetScore();
     }
 
     private void Multiplication()
@@ -110,6 +105,8 @@ Enter your selection number (or type Exit to exit the program)";
             Console.WriteLine($"What is {multiplicand} * {multiplier}");
             CheckAnswer(multiplicand * multiplier);
         }
+
+        GetScore();
     }
 
     private void Division()
@@ -120,6 +117,8 @@ Enter your selection number (or type Exit to exit the program)";
             Console.WriteLine($"What is {dividend} / {divisor}");
             CheckAnswer(dividend / divisor);
         }
+
+        GetScore();
     }
 
     private void CheckAnswer(int answer)
@@ -131,6 +130,11 @@ Enter your selection number (or type Exit to exit the program)";
         }
         else
             Console.WriteLine("You answered incorrectly!");
+    }
+
+    private void GetScore()
+    {
+        Console.WriteLine($"Your score: {Score} / {_problemCount}");
     }
 
     private (int, int) GenerateNumbers(GameType gameType)
@@ -160,7 +164,7 @@ Enter your selection number (or type Exit to exit the program)";
 
     private bool PlayAgain()
     {
-        Console.WriteLine("Thank you for playing! Would you like to play again(y/n)");
+        Console.WriteLine("Would you like to play again(y/n)");
         var response = Console.ReadLine();
 
         return response.Trim().ToLower() == "y";
