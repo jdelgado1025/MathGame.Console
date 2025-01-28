@@ -17,6 +17,58 @@ public class Game
         History = new();
     }
 
+    public void Start()
+    {
+        do
+        {
+            Score = 0;
+            PlayGame();
+        }
+        while (PlayAgain());
+    }
+
+    private void PlayGame()
+    {
+        string? readResult;
+        string menuSelection = "";
+
+        do
+        {
+            Console.Clear();
+            DisplayMenu();
+
+            readResult = Console.ReadLine();
+            if (readResult != null)
+            {
+                menuSelection = readResult.ToLower().Trim();
+            }
+
+            switch (menuSelection)
+            {
+                case "1":
+                    Addition();
+                    break;
+                case "2":
+                    Subtraction();
+                    break;
+                case "3":
+                    Multiplication();
+                    break;
+                case "4":
+                    Division();
+                    break;
+                case "exit":
+                    Console.Write("Goodbye! Thanks for playing!");
+                    break;
+                default:
+                    Console.WriteLine("Invalid input");
+                    break;
+            }
+
+        }
+        while (menuSelection != "exit");
+    }
+
     private void DisplayMenu()
     {
         string menu = @"Choose an option:
@@ -32,30 +84,42 @@ Enter your selection number (or type Exit to exit the program)";
 
     private void Addition()
     {
-        var (addendOne, addendTwo) = GenerateNumbers(GameType.Addition);
-        Console.WriteLine($"What is {addendOne} + {addendTwo}");
-        CheckAnswer(addendOne + addendTwo);
+        for(int i = 0; i < _problemCount; i++)
+        {
+            var (addendOne, addendTwo) = GenerateNumbers(GameType.Addition);
+            Console.WriteLine($"What is {addendOne} + {addendTwo}");
+            CheckAnswer(addendOne + addendTwo);
+        }
     }
 
     private void Subtraction()
     {
-        var (minuend, subtrahend) = GenerateNumbers(GameType.Subtraction);
-        Console.WriteLine($"What is {minuend} - {subtrahend}");
-        CheckAnswer(minuend - subtrahend);
+        for(int i = 0; i < _problemCount; i++)
+        {
+            var (minuend, subtrahend) = GenerateNumbers(GameType.Subtraction);
+            Console.WriteLine($"What is {minuend} - {subtrahend}");
+            CheckAnswer(minuend - subtrahend);
+        }
     }
 
     private void Multiplication()
     {
-        var (multiplicand, multiplier) = GenerateNumbers(GameType.Multiplication);
-        Console.WriteLine($"What is {multiplicand} * {multiplier}");
-        CheckAnswer(multiplicand * multiplier);
+        for (int i = 0; i < _problemCount; i++)
+        {
+            var (multiplicand, multiplier) = GenerateNumbers(GameType.Multiplication);
+            Console.WriteLine($"What is {multiplicand} * {multiplier}");
+            CheckAnswer(multiplicand * multiplier);
+        }
     }
 
     private void Division()
     {
-        var (dividend, divisor) = GenerateNumbers(GameType.Addition);
-        Console.WriteLine($"What is {dividend} / {divisor}");
-        CheckAnswer(dividend / divisor);
+        for (int i = 0; i < _problemCount; i++)
+        {
+            var (dividend, divisor) = GenerateNumbers(GameType.Division);
+            Console.WriteLine($"What is {dividend} / {divisor}");
+            CheckAnswer(dividend / divisor);
+        }
     }
 
     private void CheckAnswer(int answer)
@@ -92,6 +156,14 @@ Enter your selection number (or type Exit to exit the program)";
 
         /* Return two values using a Tuple */
         return (numberOne, numberTwo);
+    }
+
+    private bool PlayAgain()
+    {
+        Console.WriteLine("Thank you for playing! Would you like to play again(y/n)");
+        var response = Console.ReadLine();
+
+        return response.Trim().ToLower() == "y";
     }
 
     internal enum GameType
