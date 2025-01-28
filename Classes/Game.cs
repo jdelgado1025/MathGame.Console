@@ -37,6 +37,27 @@ Enter your selection number (or type Exit to exit the program)";
         CheckAnswer(addendOne + addendTwo);
     }
 
+    private void Subtraction()
+    {
+        var (minuend, subtrahend) = GenerateNumbers(GameType.Subtraction);
+        Console.WriteLine($"What is {minuend} - {subtrahend}");
+        CheckAnswer(minuend - subtrahend);
+    }
+
+    private void Multiplication()
+    {
+        var (multiplicand, multiplier) = GenerateNumbers(GameType.Multiplication);
+        Console.WriteLine($"What is {multiplicand} * {multiplier}");
+        CheckAnswer(multiplicand * multiplier);
+    }
+
+    private void Division()
+    {
+        var (dividend, divisor) = GenerateNumbers(GameType.Addition);
+        Console.WriteLine($"What is {dividend} / {divisor}");
+        CheckAnswer(dividend / divisor);
+    }
+
     private void CheckAnswer(int answer)
     {
         if (int.TryParse(Console.ReadLine(), out var userAnswer) && userAnswer == answer)
