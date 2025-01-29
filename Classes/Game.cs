@@ -20,8 +20,8 @@ public class Game
 
     public void Start()
     {
-        Console.WriteLine("Welcome to the Math Game!");
-        Thread.Sleep(500);
+        Console.WriteLine("Hello! Welcome to the Math Game!");
+        Thread.Sleep(1000);
         PlayGame();
     }
 
@@ -67,7 +67,7 @@ public class Game
                     break;
             }
             
-        } while (showMenu || menuSelection != "exit");
+        } while (showMenu);
     }
 
     private void DisplayMenu()
@@ -80,7 +80,7 @@ public class Game
     5. Previous Game History
     6. Quit
 
-Enter your selection number (or type Exit to exit the program)";
+Enter your selection number:";
         Console.WriteLine(menu);
     }
 
@@ -122,11 +122,12 @@ Enter your selection number (or type Exit to exit the program)";
         while (PlayAgain());
 
         Console.WriteLine("Returning to main menu...");
+        Thread.Sleep(500);
     }
 
     private void GenerateQuestion(ref int numberOne, ref int numberTwo, string operationSymbol)
     {
-        Console.WriteLine($"{numberOne} {operationSymbol} {numberTwo}");
+        Console.WriteLine($"{numberOne} {operationSymbol} {numberTwo}:");
     }
 
     private int CalculateAnswer(int numberOne, int numberTwo, Operation operation)
@@ -231,7 +232,7 @@ Enter your selection number (or type Exit to exit the program)";
 
     private bool PlayAgain()
     {
-        Console.WriteLine("Would you like to play again(y/n)");
+        Console.Write("Would you like to play again (y/n): ");
         var response = Console.ReadLine();
 
         return response.Trim().ToLower() == "y";
