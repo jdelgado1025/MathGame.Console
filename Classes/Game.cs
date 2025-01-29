@@ -164,6 +164,12 @@ Enter your selection number (or type Exit to exit the program)";
 
     private void PrintHistory()
     {
+        if(History.Count == 0)
+        {
+            Console.WriteLine("There is no history to display.");
+            return;
+        }
+
         foreach(var record in History)
         {
             Console.WriteLine($"{record.Date}: {record.GameType} - {record.Score} / {_problemCount}");
