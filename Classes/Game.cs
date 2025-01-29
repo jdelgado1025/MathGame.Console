@@ -29,6 +29,7 @@ public class Game
     {
         string? readResult;
         string menuSelection = "";
+        bool showMenu = true;
 
         do
         {
@@ -44,30 +45,29 @@ public class Game
             switch (menuSelection)
             {
                 case "1":
-                    Score = 0;
-                    Addition();
+                    RunOperationGame(Operation.Addition);
                     break;
                 case "2":
-                    Score = 0;
-                    Subtraction();
+                    RunOperationGame(Operation.Subtraction);
                     break;
                 case "3":
-                    Score = 0;
-                    Multiplication();
+                    RunOperationGame(Operation.Multiplication);
                     break;
                 case "4":
-                    Score = 0;
-                    Division();
+                    RunOperationGame(Operation.Division);
                     break;
                 case "5":
                     PrintHistory();
+                    break;
+                case "6":
+                    showMenu = false;
                     break;
                 default:
                     Console.WriteLine("Invalid input");
                     break;
             }
             
-        } while (PlayAgain());
+        } while (showMenu || menuSelection != "exit");
     }
 
     private void DisplayMenu()
@@ -78,61 +78,77 @@ public class Game
     3. Multiplication
     4. Division
     5. Previous Game History
+    6. Quit
 
 Enter your selection number (or type Exit to exit the program)";
         Console.WriteLine(menu);
     }
 
-    private void Addition()
+    private void RunOperationGame(Operation operation)
     {
-        for (int i = 0; i < _problemCount; i++)
+        int numberOne, numberTwo;
+        string operationSymbol = "";
+        switch (operation)
         {
-            var (addendOne, addendTwo) = GenerateNumbers(Operation.Addition);
-            Console.WriteLine($"What is {addendOne} + {addendTwo}");
-            CheckAnswer(addendOne + addendTwo);
+            case Operation.Addition:
+                operationSymbol = "+";
+                break;
+            case Operation.Subtraction:
+                operationSymbol = "-";
+                break;
+            case Operation.Multiplication:
+                operationSymbol = "*";
+                break;
+            case Operation.Division:
+                operationSymbol = "/";
+                break;
         }
 
-        DisplayScore();
-        AddToHistory(Score, Operation.Addition);
+        do
+        {
+            Score = 0;
+            Console.Clear();
+            Console.WriteLine($"{operation}\n----------------------------------------------------");
+            for (int i = 0; i < _problemCount; i++)
+            {
+                (numberOne, numberTwo) = GenerateNumbers(operation);
+                GenerateQuestion(ref numberOne, ref numberTwo, operationSymbol);
+                CheckAnswer(CalculateAnswer(numberOne, numberTwo, operation));
+            }
+
+            DisplayScore();
+            AddToHistory(Score, operation);
+        }
+        while (PlayAgain());
+
+        Console.WriteLine("Returning to main menu...");
     }
 
-    private void Subtraction()
+    private void GenerateQuestion(ref int numberOne, ref int numberTwo, string operationSymbol)
     {
-        for (int i = 0; i < _problemCount; i++)
-        {
-            var (minuend, subtrahend) = GenerateNumbers(Operation.Subtraction);
-            Console.WriteLine($"What is {minuend} - {subtrahend}");
-            CheckAnswer(minuend - subtrahend);
-        }
-
-        DisplayScore();
-        AddToHistory(Score, Operation.Subtraction);
+        Console.WriteLine($"{numberOne} {operationSymbol} {numberTwo}");
     }
 
-    private void Multiplication()
+    private int CalculateAnswer(int numberOne, int numberTwo, Operation operation)
     {
-        for (int i = 0; i < _problemCount; i++)
+        int answer = 0;
+        switch(operation)
         {
-            var (multiplicand, multiplier) = GenerateNumbers(Operation.Multiplication);
-            Console.WriteLine($"What is {multiplicand} * {multiplier}");
-            CheckAnswer(multiplicand * multiplier);
+            case Operation.Addition:
+                answer = numberOne + numberTwo;
+                break;
+            case Operation.Subtraction:
+                answer = numberOne - numberTwo;
+                break;
+            case Operation.Multiplication:
+                answer = numberOne * numberTwo;
+                break;
+            case Operation.Division:
+                answer = numberOne / numberTwo;
+                break;
         }
 
-        DisplayScore();
-        AddToHistory(Score, Operation.Multiplication);
-    }
-
-    private void Division()
-    {
-        for (int i = 0; i < _problemCount; i++)
-        {
-            var (dividend, divisor) = GenerateNumbers(Operation.Division);
-            Console.WriteLine($"What is {dividend} / {divisor}");
-            CheckAnswer(dividend / divisor);
-        }
-
-        DisplayScore();
-        AddToHistory(Score, Operation.Division);
+        return answer;
     }
 
     private void CheckAnswer(int answer)
@@ -166,7 +182,8 @@ Enter your selection number (or type Exit to exit the program)";
     {
         if(History.Count == 0)
         {
-            Console.WriteLine("There is no history to display.");
+            Console.WriteLine("There is no history to display. Press any key to continue...");
+            Console.ReadLine();
             return;
         }
 
@@ -174,6 +191,9 @@ Enter your selection number (or type Exit to exit the program)";
         {
             Console.WriteLine($"{record.Date}: {record.GameType} - {record.Score} / {_problemCount}");
         }
+
+        Console.WriteLine("Press any key to continue...");
+        Console.ReadLine();
     }
 
     private (int, int) GenerateNumbers(Operation gameType)
@@ -195,6 +215,14 @@ Enter your selection number (or type Exit to exit the program)";
         {
             numberOne = rand.Next(1, 100);
             numberTwo = rand.Next(1, 100);
+        }
+
+        //Avoid negative number answers
+        if(gameType == Operation.Subtraction && numberTwo > numberOne)
+        {
+            int temp = numberOne;
+            numberOne = numberTwo;
+            numberTwo = temp;
         }
 
         /* Return two values using a Tuple */
