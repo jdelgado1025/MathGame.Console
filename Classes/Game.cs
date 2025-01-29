@@ -21,6 +21,7 @@ public class Game
     public void Start()
     {
         Console.WriteLine("Welcome to the Math Game!");
+        Thread.Sleep(500);
         PlayGame();
     }
 
@@ -200,10 +201,5 @@ Enter your selection number (or type Exit to exit the program)";
         var response = Console.ReadLine();
 
         return response.Trim().ToLower() == "y";
-    }
-
-    void AddToHistory()
-    {
-
     }
 }
