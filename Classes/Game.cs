@@ -21,7 +21,6 @@ public class Game
     public void Start()
     {
         Console.WriteLine("Welcome to the Math Game!");
-
         PlayGame();
     }
 
@@ -93,11 +92,7 @@ Enter your selection number (or type Exit to exit the program)";
         }
 
         DisplayScore();
-        History.Add(new Record {
-            Date = DateTime.Now,
-            Score = Score,
-            GameType = Operation.Addition
-        });
+        AddToHistory(Score, Operation.Addition);
     }
 
     private void Subtraction()
@@ -110,12 +105,7 @@ Enter your selection number (or type Exit to exit the program)";
         }
 
         DisplayScore();
-        History.Add(new Record
-        {
-            Date = DateTime.Now,
-            Score = Score,
-            GameType = Operation.Subtraction
-        });
+        AddToHistory(Score, Operation.Subtraction);
     }
 
     private void Multiplication()
@@ -128,12 +118,7 @@ Enter your selection number (or type Exit to exit the program)";
         }
 
         DisplayScore();
-        History.Add(new Record
-        {
-            Date = DateTime.Now,
-            Score = Score,
-            GameType = Operation.Multiplication
-        });
+        AddToHistory(Score, Operation.Multiplication);
     }
 
     private void Division()
@@ -146,12 +131,7 @@ Enter your selection number (or type Exit to exit the program)";
         }
 
         DisplayScore();
-        History.Add(new Record
-        {
-            Date = DateTime.Now,
-            Score = Score,
-            GameType = Operation.Division
-        });
+        AddToHistory(Score, Operation.Division);
     }
 
     private void CheckAnswer(int answer)
@@ -168,6 +148,17 @@ Enter your selection number (or type Exit to exit the program)";
     private void DisplayScore()
     {
         Console.WriteLine($"Your score: {Score} / {_problemCount}");
+    }
+
+    private void AddToHistory(int score, Operation operation)
+    {
+        History.Add(
+            new Record
+            {
+                Date = DateTime.Now,
+                Score = score,
+                GameType = operation
+            });
     }
 
     private void PrintHistory()
