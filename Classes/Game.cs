@@ -87,6 +87,30 @@ Enter your selection number:";
     private void RunOperationGame(Operation operation)
     {
         int numberOne, numberTwo;
+
+        do
+        {
+            Score = 0;
+            Console.Clear();
+            Console.WriteLine($"{operation}\n----------------------------------------------------");
+            for (int i = 0; i < _problemCount; i++)
+            {
+                (numberOne, numberTwo) = GenerateNumbers(operation);
+                GenerateQuestion(ref numberOne, ref numberTwo, operation);
+                CheckAnswer(CalculateAnswer(numberOne, numberTwo, operation));
+            }
+
+            DisplayScore();
+            AddToHistory(Score, operation);
+        }
+        while (PlayAgain());
+
+        Console.WriteLine("Returning to main menu...");
+        Thread.Sleep(500);
+    }
+
+    private void GenerateQuestion(ref int numberOne, ref int numberTwo, Operation operation)
+    {
         string operationSymbol = "";
         switch (operation)
         {
@@ -104,29 +128,6 @@ Enter your selection number:";
                 break;
         }
 
-        do
-        {
-            Score = 0;
-            Console.Clear();
-            Console.WriteLine($"{operation}\n----------------------------------------------------");
-            for (int i = 0; i < _problemCount; i++)
-            {
-                (numberOne, numberTwo) = GenerateNumbers(operation);
-                GenerateQuestion(ref numberOne, ref numberTwo, operationSymbol);
-                CheckAnswer(CalculateAnswer(numberOne, numberTwo, operation));
-            }
-
-            DisplayScore();
-            AddToHistory(Score, operation);
-        }
-        while (PlayAgain());
-
-        Console.WriteLine("Returning to main menu...");
-        Thread.Sleep(500);
-    }
-
-    private void GenerateQuestion(ref int numberOne, ref int numberTwo, string operationSymbol)
-    {
         Console.WriteLine($"{numberOne} {operationSymbol} {numberTwo}:");
     }
 
