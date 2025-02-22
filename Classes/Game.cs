@@ -1,13 +1,10 @@
 ﻿using MathGame.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace MathGame.Classes;
 public class Game
 {
+    private Stopwatch _timer;
     private List<Record> History { get; set; }
     private int Score { get; set; }
     private const int _problemCount = 5;
@@ -16,6 +13,7 @@ public class Game
     {
         Score = 0;
         History = new();
+        _timer = new();
     }
 
     public void Start()
@@ -90,17 +88,19 @@ Enter your selection number:";
 
         do
         {
+            _timer.Start();
             Score = 0;
             Console.Clear();
             Console.WriteLine($"{operation}\n----------------------------------------------------");
             for (int i = 0; i < _problemCount; i++)
             {
                 (numberOne, numberTwo) = GenerateNumbers(operation);
-                GenerateQuestion(ref numberOne, ref numberTwo, operation);
+                GenerateQuestion(numberOne, numberTwo, operation);
                 CheckAnswer(CalculateAnswer(numberOne, numberTwo, operation));
             }
 
-            DisplayScore();
+            _timer.Stop();
+            DisplayResults();
             AddToHistory(Score, operation);
         }
         while (PlayAgain());
@@ -109,7 +109,7 @@ Enter your selection number:";
         Thread.Sleep(500);
     }
 
-    private void GenerateQuestion(ref int numberOne, ref int numberTwo, Operation operation)
+    private void GenerateQuestion(int numberOne, int numberTwo, Operation operation)
     {
         string operationSymbol = "";
         switch (operation)
@@ -164,9 +164,10 @@ Enter your selection number:";
             Console.WriteLine("You answered incorrectly!");
     }
 
-    private void DisplayScore()
+    private void DisplayResults()
     {
         Console.WriteLine($"Your score: {Score} / {_problemCount}");
+        Console.WriteLine($"Time elapsed: {_timer.Elapsed.Hours}:{_timer.Elapsed.Minutes}:{_timer.Elapsed.Seconds}.{_timer.Elapsed.Milliseconds / 10}");
     }
 
     private void AddToHistory(int score, Operation operation)
