@@ -56,9 +56,12 @@ public class Game
                     RunOperationGame(Operation.Division);
                     break;
                 case "5":
-                    _history.PrintHistory();
+                    RunOperationGame(Operation.Random);
                     break;
                 case "6":
+                    _history.PrintHistory();
+                    break;
+                case "7":
                     showMenu = false;
                     break;
                 default:
@@ -76,8 +79,9 @@ public class Game
     2. Subtraction
     3. Multiplication
     4. Division
-    5. Previous Game History
-    6. Quit
+    5. Random
+    6. Previous Game History
+    7. Quit
 
 Enter your selection number:";
         Console.WriteLine(menu);
@@ -86,6 +90,10 @@ Enter your selection number:";
     private void RunOperationGame(Operation operation)
     {
         int numberOne, numberTwo;
+        bool random = false;
+
+        if (operation == Operation.Random)
+            random = true;
 
         do
         {
@@ -93,8 +101,11 @@ Enter your selection number:";
             Score = 0;
             Console.Clear();
             Console.WriteLine($"{operation}\n----------------------------------------------------");
+
             for (int i = 0; i < _problemCount; i++)
             {
+                if (random)
+                    operation = GetOperation();
                 (numberOne, numberTwo) = GenerateNumbers(operation);
                 GenerateQuestion(numberOne, numberTwo, operation);
                 CheckAnswer(CalculateAnswer(numberOne, numberTwo, operation));
@@ -102,6 +113,9 @@ Enter your selection number:";
 
             _timer.Stop();
             DisplayResults();
+            if (random)
+                operation = Operation.Random;
+            
             _history.AddToHistory(Score, operation);
         }
         while (PlayAgain());
@@ -202,6 +216,14 @@ Enter your selection number:";
 
         /* Return two values using a Tuple */
         return (numberOne, numberTwo);
+    }
+
+    private Operation GetOperation()
+    {
+        Random rand = new Random();
+        int getOperation = rand.Next(0, 4);
+
+        return (Operation)getOperation;
     }
 
     private bool PlayAgain()
