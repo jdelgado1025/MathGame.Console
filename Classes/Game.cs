@@ -1,18 +1,19 @@
 ﻿using MathGame.Models;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace MathGame.Classes;
 public class Game
 {
     private Stopwatch _timer;
-    private List<Record> History { get; set; }
+    private GameHistory _history;
     private int Score { get; set; }
     private const int _problemCount = 5;
 
     public Game()
     {
         Score = 0;
-        History = new();
+        _history = new();
         _timer = new();
     }
 
@@ -55,7 +56,7 @@ public class Game
                     RunOperationGame(Operation.Division);
                     break;
                 case "5":
-                    PrintHistory();
+                    _history.PrintHistory();
                     break;
                 case "6":
                     showMenu = false;
@@ -101,7 +102,7 @@ Enter your selection number:";
 
             _timer.Stop();
             DisplayResults();
-            AddToHistory(Score, operation);
+            _history.AddToHistory(Score, operation);
         }
         while (PlayAgain());
 
@@ -168,35 +169,6 @@ Enter your selection number:";
     {
         Console.WriteLine($"Your score: {Score} / {_problemCount}");
         Console.WriteLine($"Time elapsed: {_timer.Elapsed.Hours}:{_timer.Elapsed.Minutes}:{_timer.Elapsed.Seconds}.{_timer.Elapsed.Milliseconds / 10}");
-    }
-
-    private void AddToHistory(int score, Operation operation)
-    {
-        History.Add(
-            new Record
-            {
-                Date = DateTime.Now,
-                Score = score,
-                GameType = operation
-            });
-    }
-
-    private void PrintHistory()
-    {
-        if(History.Count == 0)
-        {
-            Console.WriteLine("There is no history to display. Press any key to continue...");
-            Console.ReadLine();
-            return;
-        }
-
-        foreach(var record in History)
-        {
-            Console.WriteLine($"{record.Date}: {record.GameType} - {record.Score} / {_problemCount}");
-        }
-
-        Console.WriteLine("Press any key to continue...");
-        Console.ReadLine();
     }
 
     private (int, int) GenerateNumbers(Operation gameType)
