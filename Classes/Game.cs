@@ -26,20 +26,14 @@ public class Game
 
     private void PlayGame()
     {
-        string? readResult;
-        string menuSelection = "";
+        string menuSelection;
         bool showMenu = true;
 
         do
         {
             Console.Clear();
             DisplayMenu();
-
-            readResult = Console.ReadLine();
-            if (readResult != null)
-            {
-                menuSelection = readResult.ToLower().Trim();
-            }
+            menuSelection = GetUserInput();
 
             switch (menuSelection)
             {
@@ -87,33 +81,69 @@ Enter your selection number:";
         Console.WriteLine(menu);
     }
 
+    private void DisplayDifficultyLevelMenu()
+    {
+        string level = @"Choose the level of difficulty:
+    1. Easy
+    2. Medium
+    3. Hard
+    4. Extreme
+
+Enter your selection number:";
+        Console.WriteLine(level);
+    }
+
     private void RunOperationGame(Operation operation)
     {
         int numberOne, numberTwo;
-        bool random = false;
+        Difficulty level = Difficulty.Easy;
+        string levelSelection = "";
+        bool isRandom = false, showMenu = true;
 
         if (operation == Operation.Random)
-            random = true;
+            isRandom = true;
+
+        while(showMenu)
+        {
+            Console.Clear();
+            DisplayDifficultyLevelMenu();
+            levelSelection = GetUserInput();
+
+            switch (levelSelection)
+            {
+                case "1":
+                case "2":
+                case "3":
+                case "4":
+                    level = (Difficulty)Enum.Parse(typeof(Difficulty), levelSelection, true);
+                    showMenu = false;
+                    break;
+                default:
+                    Console.WriteLine("Invalid input.. Please try again.");
+                    break;
+
+            }
+        }
 
         do
         {
             _timer.Start();
             Score = 0;
             Console.Clear();
-            Console.WriteLine($"{operation}\n----------------------------------------------------");
+            Console.WriteLine($"{operation} - {level}\n----------------------------------------------------");
 
             for (int i = 0; i < _problemCount; i++)
             {
-                if (random)
+                if (isRandom)
                     operation = GetOperation();
-                (numberOne, numberTwo) = GenerateNumbers(operation);
+                (numberOne, numberTwo) = GenerateNumbers(operation, level);
                 GenerateQuestion(numberOne, numberTwo, operation);
                 CheckAnswer(CalculateAnswer(numberOne, numberTwo, operation));
             }
 
             _timer.Stop();
             DisplayResults();
-            if (random)
+            if (isRandom)
                 operation = Operation.Random;
             
             _history.AddToHistory(Score, operation);
@@ -185,29 +215,51 @@ Enter your selection number:";
         Console.WriteLine($"Time elapsed: {_timer.Elapsed.Hours}:{_timer.Elapsed.Minutes}:{_timer.Elapsed.Seconds}.{_timer.Elapsed.Milliseconds / 10}");
     }
 
-    private (int, int) GenerateNumbers(Operation gameType)
+    private (int, int) GenerateNumbers(Operation gameType, Difficulty difficultyLevel)
     {
         int numberOne, numberTwo;
+        int upperLimit;
+
+        const int lowerLimit = 0, divisorLowerLimit = 1;
         Random rand = new Random();
+
+        switch(difficultyLevel)
+        {
+            case Difficulty.Easy:
+                upperLimit = 100;
+                break;
+            case Difficulty.Medium:
+                upperLimit = 300;
+                break;
+            case Difficulty.Hard:
+                upperLimit = 500;
+                break;
+            case Difficulty.Extreme:
+                upperLimit = 5000;
+                break;
+            default:
+                upperLimit = 100;
+                break;
+        }
 
         if (gameType == Operation.Division)
         {
             /* Ensure the divisor is not 0 and result is a whole number */
             do
             {
-                numberOne = rand.Next(0, 100);
-                numberTwo = rand.Next(1, 100);
+                numberOne = rand.Next(lowerLimit, upperLimit);
+                numberTwo = rand.Next(divisorLowerLimit, upperLimit);
             }
             while (numberOne % numberTwo != 0);
         }
         else
         {
-            numberOne = rand.Next(1, 100);
-            numberTwo = rand.Next(1, 100);
+            numberOne = rand.Next(lowerLimit, upperLimit);
+            numberTwo = rand.Next(lowerLimit, upperLimit);
         }
 
-        //Avoid negative number answers
-        if(gameType == Operation.Subtraction && numberTwo > numberOne)
+        //Avoid negative number answers & higher number on the right side for Easy level
+        if(difficultyLevel == Difficulty.Easy && numberTwo > numberOne)
         {
             int temp = numberOne;
             numberOne = numberTwo;
@@ -224,6 +276,17 @@ Enter your selection number:";
         int getOperation = rand.Next(0, 4);
 
         return (Operation)getOperation;
+    }
+
+    private string GetUserInput()
+    {
+        string readInput = "";
+        do
+        {
+            readInput = Console.ReadLine();
+        } while (readInput == "" || readInput == null);
+
+        return readInput.ToLower().Trim();
     }
 
     private bool PlayAgain()
